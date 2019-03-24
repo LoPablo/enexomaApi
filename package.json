@@ -2,7 +2,7 @@
   "name": "schellenbergapi",
   "version": "0.1.0",
   "description": "Api for using with the Schellenberg Smart Home Gateway",
-  "main": "test1.js",
+  "main": "SchellenbergApi.js",
   "author": "Pascal Hartmann",
   "license": "ISC",
   "dependencies": {
