@@ -3,11 +3,6 @@ const Deffered = require('../Helpers/Deffered');
 const FileSystem = require('fs');
 const Tls = require('tls');
 
-let defaultConfig = {
-    host: 'SH1-Box.local',
-    port: '4300',
-    certificate: FileSystem.readFileSync('./Comunication/CA.pem')
-};
 
 class SmartSocket {
 
@@ -52,7 +47,7 @@ class SmartSocket {
                     resolve();
                 }
             })
-                .on('error', (err) => {
+            .on('error', (err) => {
                 reject(err);
             });
         });

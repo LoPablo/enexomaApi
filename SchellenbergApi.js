@@ -6,34 +6,14 @@ const KeepAliveService = require('./Service/KeepAliveService');
 const DataService = require('./Service/DataService');
 const DataStore = require('./DataStore/DataStore');
 const MessageHandler = require('./Comunication/MessageHandler');
-const Events = require('./Helpers/Events');
-const FileSystem = require('fs');
-
-let defaultConfig = {
-    sessionConfig: {
-        username: 'admin',
-        password: 'admin',
-        cSymbol: 'D19015',
-        cSymbolAddon: 'i',
-        shcVersion: '2.14.5',
-        shApiVersion: '2.13'
-    },
-    smartSocketConfig: {
-        host: '10.10.80.150',
-        port: '4300',
-        certificate: FileSystem.readFileSync('./Comunication/CA.pem')
-    }
-};
 
 class SchellenbergApi extends EventEmitter {
 
     constructor(inConfig, debugLog) {
         super();
         this.debugLog = debugLog;
-        if (inConfig) {
-            this.mainConfig = inConfig;
-        } else {
-            this.mainConfig = defaultConfig;
+        if (!inConfig) {
+            return;
         }
         this.logService = new LogService(this.debugLog);
         this.dataStore = new DataStore();
@@ -78,7 +58,8 @@ class SchellenbergApi extends EventEmitter {
             .catch((error) => {
                 const instance = this;
                 if (instance.attemptCount < 6) {
-                    this.logService.error("There was an Error setting up the socket, trying again in one minute (Attempt " + this.attemptCount + " of 5.");
+                    this.logService.error(error);
+                    this.logService.error("There was an Error setting up the socket, trying again in one minute (Attempt " + this.attemptCount + " of 5).");
                     setTimeout(() => {
                         instance.attemptCount += 1;
                         if (instance.attemptCount < 6) {
@@ -87,7 +68,7 @@ class SchellenbergApi extends EventEmitter {
 
                     }, 60000);
                 } else {
-                    this.logService.error("there was an Error setting up the socket, quitting.")
+                    this.logService.error("There was an Error setting up the socket, quitting.")
                 }
 
             });

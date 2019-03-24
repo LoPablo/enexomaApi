@@ -18,7 +18,4 @@ let myConfig = {
 };
 var test = new smart(myConfig, console.log);
 
-test.dataService.on('newDV', (deviceID) => {
-    console.log('new Value for ' + deviceID);
-    console.log('value is ' + test.dataService.getDeviceValue(deviceID));
-});
+

@@ -9,22 +9,21 @@ class DeviceService {
         this.deviceValueMap = inDeviceValueMap;
     }
 
-    newDevices(inNewDeviceInfos) {
-        for (let i = 0; i < inNewDeviceInfos.length; i++) {
-            this.newDevice(inNewDeviceInfos[i]);
-        }
-    }
-
     newDevice(inNewDeviceInfo) {
-        let retID = null;
-        if (inNewDeviceInfo) {
-            if (inNewDeviceInfo.deviceID && inNewDeviceInfo.deviceName && inNewDeviceInfo.deviceName && inNewDeviceInfo.deviceDesignation && inNewDeviceInfo.manufacturer) {
-                let oldValue = this.getDeviceValue(inNewDeviceInfo.deviceID);
-                this.deviceMap.set(inNewDeviceInfo.deviceID, inNewDeviceInfo);
-                retID = inNewDeviceInfo.deviceID;
+        return new Promise((resolve, reject) => {
+            let retID = null;
+            if (inNewDeviceInfo) {
+                if (inNewDeviceInfo.deviceID && inNewDeviceInfo.deviceName && inNewDeviceInfo.deviceDesignation && inNewDeviceInfo.manufacturer) {
+                    this.deviceMap.set(inNewDeviceInfo.deviceID, inNewDeviceInfo);
+                    retID = inNewDeviceInfo.deviceID;
+                    resolve(retID);
+                } else {
+                    reject();
+                }
+            } else {
+                reject();
             }
-        }
-        return retID;
+        });
     }
 
     getDevice(inDeviceId) {
