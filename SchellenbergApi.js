@@ -15,6 +15,7 @@ class SchellenbergApi extends EventEmitter {
         if (!inConfig) {
             return;
         }
+        this.mainConfig = inConfig;
         this.logService = new LogService(this.debugLog);
         this.dataStore = new DataStore();
         this.attemptCount = 1;
