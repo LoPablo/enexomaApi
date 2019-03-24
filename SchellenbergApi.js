@@ -37,22 +37,19 @@ class SchellenbergApi extends EventEmitter {
         }
         this.logService = new LogService(this.debugLog);
         this.dataStore = new DataStore();
-
+        this.attemptCount = 1;
         this._setupServices();
         this._setupSocket();
     }
 
     _reinitializePartly() {
+        var instance = this;
         if (this.keepAliveService) {
             this.keepAliveService.stopKeepAlive();
         }
 
-        this._setupServices();
-        this._setupSocket();
-    }
-
-    _reinitializeCompletly() {
-
+        instance._setupServices();
+        instance._setupSocket();
     }
 
     _setupServices() {
@@ -67,23 +64,34 @@ class SchellenbergApi extends EventEmitter {
         this.mainSocket.setupSocket(this.handler)
             .then(() => {
                 console.log('connected');
-                return this.sessionService.requestSession();
+                this.sessionService.requestSession()
+                    .then(() => {
+                        console.log(this.sessionService.sessionID);
+                        this.dataService.refreshDataNormal();
+                        this.keepAliveService.startKeepAlive();
+                    })
+                    .catch((error) => {
+                        console.log('wau');
+                        console.log(error);
+                    });
             })
             .catch((error) => {
-                console.log('miau');
-                console.log(error);
-            })
-            .then(() => {
-                console.log(this.sessionService.sessionID);
+                const instance = this;
+                if (instance.attemptCount < 6) {
+                    this.logService.error("There was an Error setting up the socket, trying again in one minute (Attempt " + this.attemptCount + " of 5.");
+                    setTimeout(() => {
+                        instance.attemptCount += 1;
+                        if (instance.attemptCount < 6) {
+                            instance._reinitializePartly();
+                        }
 
-                this.dataService.refreshDataNormal();
-                this.keepAliveService.startKeepAlive();
+                    }, 60000);
+                } else {
+                    this.logService.error("there was an Error setting up the socket, quitting.")
+                }
 
-            })
-            .catch((error) => {
-                console.log('wau');
-                console.log(error);
             });
+
 
     }
 
