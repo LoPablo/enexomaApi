@@ -45,6 +45,7 @@ class dataService extends EventEmitter {
     }
 
     updateDeviceInfo(newDevice) {
+        //Todo: REWORK TO DO PROMISES
         if (newDevice && newDevice.response && newDevice.currentTimestamp) {
             this.dataStorage.lastTimestamp = newDevice.currentTimestamp;
             let newID = this.deviceService.newDevice(newDevice.response);
@@ -86,7 +87,17 @@ class dataService extends EventEmitter {
                             instance.dataStorage.lastLanguageTranslationVersion = instance.translationService.newVersion(data.newLanguageTranslation);
                         }
                         if (data.newDeviceInfos) {
-                            instance.deviceService.newDevices(data.newDeviceInfos);
+                            for (let i = 0; i < data.newDeviceInfos.length; i++) {
+                                instance.deviceService.newDevice(data.newDeviceInfos[i])
+                                .then((deviceID) => {
+
+                                    instance.emit(Events.newDeviceInfo, deviceID);
+                                })
+                                .catch((err) => {
+                                    reject(err);
+                                });
+
+                            }
                         }
                         if (data.newDeviceValues) {
                             instance.deviceService.updateDeviceValues(data.newDeviceValues);
