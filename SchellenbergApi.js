@@ -23,28 +23,28 @@ class SchellenbergApi extends EventEmitter {
         this._setupSocket();
     }
 
-    _reinitializePartly() {
+    reinitializePartly() {
         this.logService.debug('ReinitializeParly called. Will Reinitialize in one second');
         const instance = this;
         setTimeout(() => {
             if (this.keepAliveService) {
                 this.keepAliveService.stopKeepAlive();
             }
-            instance._setupServices();
-            instance._setupSocket();
+            instance.setupServices();
+            instance.setupSocket();
         }, 1000);
 
     }
 
-    _setupServices() {
+    setupServices() {
         this.mainSocket = new SmartSocket(this.mainConfig.smartSocketConfig, this.logService);
         this.sessionService = new SessionService(this.mainSocket, this.mainConfig.sessionConfig);
         this.keepAliveService = new KeepAliveService(this.mainSocket);
         this.dataService = new DataService(this.mainSocket, this.sessionService, this.dataStore, this.logService);
     }
 
-    _setupSocket() {
-        this.handler = new MessageHandler(4000, this.dataService, this._reinitializePartly, this.logService);
+    setupSocket() {
+        this.handler = new MessageHandler(4000, this.dataService, this.reinitializePartly, this.logService);
         this.mainSocket.setupSocket(this.handler)
             .then(() => {
                 console.log('connected');
@@ -67,7 +67,7 @@ class SchellenbergApi extends EventEmitter {
                     setTimeout(() => {
                         instance.attemptCount += 1;
                         if (instance.attemptCount < 6) {
-                            instance._reinitializePartly();
+                            instance.reinitializePartly();
                         }
 
                     }, 60000);
