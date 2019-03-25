@@ -48,8 +48,13 @@ class dataService extends EventEmitter {
         //Todo: REWORK TO DO PROMISES
         if (newDevice && newDevice.response && newDevice.currentTimestamp) {
             this.dataStorage.lastTimestamp = newDevice.currentTimestamp;
-            let newID = this.deviceService.newDevice(newDevice.response);
-            this.emit(Events.newDeviceInfo, newID);
+            this.deviceService.newDevice(newDevice)
+            .then((deviceID) => {
+                this.emit(Events.newDeviceInfo, deviceID);
+            })
+            .catch((err) => {
+
+            });
         }
     }
 

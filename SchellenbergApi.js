@@ -6,6 +6,7 @@ const KeepAliveService = require('./Service/KeepAliveService');
 const DataService = require('./Service/DataService');
 const DataStore = require('./DataStore/DataStore');
 const MessageHandler = require('./Comunication/MessageHandler');
+const Events = require('../Helpers/Events');
 
 class SchellenbergApi extends EventEmitter {
 
@@ -44,7 +45,17 @@ class SchellenbergApi extends EventEmitter {
     }
 
     setupSocket() {
-        this.handler = new MessageHandler(4000, this.dataService, this.reinitializePartly, this.logService);
+        const instance = this;
+        this.handler = new MessageHandler(4000, this.dataService);
+        this.handler.on(Events.disconnected, () => {
+            instance.reinitializePartly();
+        });
+        this.handler.on(Events.apiError, (error) => {
+            instance.logService.debugLog(error);
+        });
+        this.handler.on(Events.jsonParseError, (error) => {
+            instance.logService.debugLog(error);
+        });
         this.mainSocket.setupSocket(this.handler)
             .then(() => {
                 console.log('connected');
