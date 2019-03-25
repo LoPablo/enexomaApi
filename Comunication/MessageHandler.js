@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 const Events = require('../Helpers/Events');
 
 class MessageHandler extends EventEmitter {
