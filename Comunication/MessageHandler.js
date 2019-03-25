@@ -1,9 +1,10 @@
-class MessageHandler {
+const Events = require('../Helpers/Events');
 
-    constructor(inTimeout, inDataService, inResetCallback, inLogService) {
+class MessageHandler extends EventEmitter {
+
+    constructor(inTimeout, inDataService) {
+        super();
         this.dataService = inDataService;
-        this.logService = inLogService;
-        this.resetCallback = inResetCallback;
         if (inTimeout) {
             this.messageTimeout = inTimeout; //for future usage
         } else {
@@ -47,14 +48,14 @@ class MessageHandler {
                     }
                 }
             } catch (e) {
-                this.logService.error(data);
+                this.emit(Events.jsonParseError, e);
             }
         }
     }
 
     errorHandler(data) {
         this.rejectNextPromise();
-        this.logService.error(data);
+        this.emit(Events.apiError, data);
     }
 
     successHandler(data) {
@@ -85,8 +86,7 @@ class MessageHandler {
         this.promiseQueue.forEach((entry) => {
             entry.reject();
         });
-        this.logService.debugLog('Disonnect Handler got called. Running reset Callback');
-        this.resetCallback();
+        this.emit(Events.disconnected);
     }
 }
 

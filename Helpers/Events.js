@@ -1,9 +1,10 @@
 module.exports = {
     newDeviceInfo: 'newDI',
     newDeviceValue: 'newDV',
-    disconnected: 'disconnected',
-    apiError: 'Api Error',
-    jsonParseError: 'JSON Parse Error',
+
+    disconnected: 'dc',
+    apiError: 'ApiErr',
+    jsonParseError: 'JSONErr',
 
 
     newLanguageTranslation: 'translationsList', //only intern usage
