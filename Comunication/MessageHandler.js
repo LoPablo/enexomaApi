@@ -6,6 +6,7 @@ class MessageHandler extends EventEmitter {
     constructor(inTimeout, inDataService) {
         super();
         this.dataService = inDataService;
+        this.disconnectHandlerRequested = false;
         if (inTimeout) {
             this.messageTimeout = inTimeout; //for future usage
         } else {
@@ -84,10 +85,13 @@ class MessageHandler extends EventEmitter {
     }
 
     disconnectHandler() {
-        this.promiseQueue.forEach((entry) => {
-            entry.reject();
-        });
-        this.emit(Events.disconnected);
+        if (!this.disconnectHandlerRequested) {
+            this.disconnectHandlerRequested = true;
+            this.promiseQueue.forEach((entry) => {
+                entry.reject();
+            });
+            this.emit(Events.disconnected);
+        }         
     }
 }
 
