@@ -85,9 +85,8 @@ class MessageHandler {
         this.promiseQueue.forEach((entry) => {
             entry.reject();
         });
-        setImmediate(() => {
-            this.resetCallback();
-        })
+        this.logService.debugLog('Disonnect Handler got called. Running reset Callback');
+        this.resetCallback();
     }
 }
 
