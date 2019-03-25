@@ -24,13 +24,16 @@ class SchellenbergApi extends EventEmitter {
     }
 
     _reinitializePartly() {
-        var instance = this;
-        if (this.keepAliveService) {
-            this.keepAliveService.stopKeepAlive();
-        }
+        this.logService.debug('ReinitializeParly called. Will Reinitialize in one second');
+        const instance = this;
+        setTimeout(() => {
+            if (this.keepAliveService) {
+                this.keepAliveService.stopKeepAlive();
+            }
+            instance._setupServices();
+            instance._setupSocket();
+        }, 1000);
 
-        instance._setupServices();
-        instance._setupSocket();
     }
 
     _setupServices() {
