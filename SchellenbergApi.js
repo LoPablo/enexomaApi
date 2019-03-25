@@ -19,8 +19,8 @@ class SchellenbergApi extends EventEmitter {
         this.logService = new LogService(this.debugLog);
         this.dataStore = new DataStore();
         this.attemptCount = 1;
-        this._setupServices();
-        this._setupSocket();
+        this.setupServices();
+        this.setupSocket();
     }
 
     reinitializePartly() {
