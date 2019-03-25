@@ -6,7 +6,7 @@ const KeepAliveService = require('./Service/KeepAliveService');
 const DataService = require('./Service/DataService');
 const DataStore = require('./DataStore/DataStore');
 const MessageHandler = require('./Comunication/MessageHandler');
-const Events = require('../Helpers/Events');
+const Events = require('./Helpers/Events');
 
 class SchellenbergApi extends EventEmitter {
 
