@@ -3,9 +3,8 @@ const LogService = require('./Service/LogService');
 const SmartSocket = require('./Comunication/SmartSocket');
 const SessionService = require('./Service/SessionService');
 const KeepAliveService = require('./Service/KeepAliveService');
-const DataService = require('./Service/DataService');
 const DataStore = require('./DataStore/DataStore');
-const MessageHandler = require('./Comunication/MessageHandler');
+const MessageHandler = require('./Comunication/DataHandler');
 const Events = require('./Helpers/Events');
 
 class SchellenbergApi extends EventEmitter {
@@ -18,14 +17,13 @@ class SchellenbergApi extends EventEmitter {
         }
         this.mainConfig = inConfig;
         this.logService = new LogService(this.debugLog);
-        this.dataStore = new DataStore();
         this.attemptCount = 1;
         this.setupServices();
         this.setupSocket();
     }
 
     reinitializePartly() {
-        this.logService.debug('ReinitializeParly called. Will Reinitialize in one second');
+        this.logService.debug('ReinitializePartly called. Will Reinitialize in one second');
         const instance = this;
         setTimeout(() => {
             if (this.keepAliveService) {
@@ -34,19 +32,17 @@ class SchellenbergApi extends EventEmitter {
             instance.setupServices();
             instance.setupSocket();
         }, 1000);
-
     }
 
     setupServices() {
+        const instance = this;
+        this.dataStore = new DataStore();
         this.mainSocket = new SmartSocket(this.mainConfig.smartSocketConfig, this.logService);
         this.sessionService = new SessionService(this.mainSocket, this.mainConfig.sessionConfig);
         this.keepAliveService = new KeepAliveService(this.mainSocket);
-        this.dataService = new DataService(this.mainSocket, this.sessionService, this.dataStore, this.logService);
-    }
-
-    setupSocket() {
-        const instance = this;
-        this.handler = new MessageHandler(4000, this.dataService);
+        this.handler = new MessageHandler(4000, this.sessionService, this.dataStore, this.mainSocket);
+        //Wrapping Events from the dataService, so when data Service gets reinitialized, the events dont drop
+        //for objects outside wanting to recieve Events
         this.handler.on(Events.disconnected, () => {
             instance.reinitializePartly();
         });
@@ -56,14 +52,27 @@ class SchellenbergApi extends EventEmitter {
         this.handler.on(Events.jsonParseError, (error) => {
             instance.logService.debugLog(error);
         });
+        this.handler.on(Events.internalError, (error) => {
+            instance.logService.debugLog(error);
+        });
+        this.handler.on(Events.newDeviceInfo, (eventIn) => {
+            this.emit(Events.newDeviceInfo, eventIn);
+        });
+        this.handler.on(Events.newDeviceValue, (eventIn) => {
+            this.emit(Events.newDeviceValue, eventIn);
+        });
+    }
+
+    setupSocket() {
         this.mainSocket.setupSocket(this.handler)
             .then(() => {
                 console.log('connected');
                 this.sessionService.requestSession()
                     .then(() => {
                         console.log(this.sessionService.sessionID);
-                        this.dataService.refreshDataNormal();
+                        this.handler.refreshDataNormal();
                         this.keepAliveService.startKeepAlive();
+                        this.attemptCount = 1;
                     })
                     .catch((error) => {
                         console.log('wau');

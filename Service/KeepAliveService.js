@@ -5,7 +5,6 @@ class KeepAliveService {
     constructor(inSmartSocket) {
         this.smartSocket = inSmartSocket;
         this.keepAliveHandler = null;
-        this.keepUpToDateHandler = null;
     }
 
     startKeepAlive() {
