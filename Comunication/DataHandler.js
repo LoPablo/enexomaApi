@@ -226,11 +226,10 @@ class DataHandler extends EventEmitter {
     }
 
     setDeviceValue(inDeviceId, inValue) {
-        const instance = this;
+
         return new Promise((resolve, reject) => {
-            instance.smartSocket.sendAndRecieveCommand(CommandFactory.createSetDeviceValueCmd(inDeviceId, inValue), instance.sessionService.sessionID)
-            .then(() => {
-                instance.updateDeviceValue(inDeviceId, inValue);
+            this.smartSocket.sendAndRecieveCommand(CommandFactory.createSetDeviceValueCmd(inDeviceId, inValue), this.sessionService.sessionID)
+            .then((data) => {
                 resolve();
             })
             .catch((err) => {
@@ -238,17 +237,7 @@ class DataHandler extends EventEmitter {
             });
         });
     }
-
-    getLatestValue(inDeviceId) {
-        const instance = this;
-        return new Promise((resolve, reject) => {
-            if (this.dataStorage.deviceValueMap.has(inDeviceId)) {
-                resolve(this.dataStorage.deviceValueMap.get(inDeviceId));
-            } else {
-                reject('No latest value for ' + inDeviceId.toString());
-            }
-        });
-    }
+    
 
 }
 

@@ -20,6 +20,7 @@ class SchellenbergApi extends EventEmitter {
         this.attemptCount = 1;
         this.setupServices();
         this.setupSocket();
+        this.setupEvents();
     }
 
     reinitializePartly() {
@@ -31,6 +32,7 @@ class SchellenbergApi extends EventEmitter {
             }
             instance.setupServices();
             instance.setupSocket();
+            instance.setupEvents();
         }, 1000);
     }
 
@@ -70,18 +72,16 @@ class SchellenbergApi extends EventEmitter {
     setupSocket() {
         this.mainSocket.setupSocket(this.handler)
             .then(() => {
-                console.log('connected');
                 this.sessionService.requestSession()
                     .then(() => {
                         console.log(this.sessionService.sessionID);
                         this.handler.refreshDataNormal();
                         this.keepAliveService.startKeepAlive();
                         this.attemptCount = 1;
-                        this.setupEvents();
+                        this.emit(Events.connected);
                     })
                     .catch((error) => {
-                        console.log('wau');
-                        console.log(error);
+                        this.handler.disconnectHandler();
                     });
             })
             .catch((error) => {
