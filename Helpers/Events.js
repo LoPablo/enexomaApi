@@ -3,6 +3,7 @@ module.exports = {
     newDeviceValue: 'newDV',
 
     disconnected: 'dc',
+    connected: 'con',
     apiError: 'ApiErr',
     jsonParseError: 'JSONErr',
     internalError: 'InternalErr'
