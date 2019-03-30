@@ -185,6 +185,10 @@ class DataHandler extends EventEmitter {
         return this.refreshData(this.dataStorage.lastTimestamp, this.dataStorage.lastCompatibilityConfigVersion, this.dataStorage.lastLanguageTranslationVersion);
     }
 
+    refreshDevices() {
+        return this.refreshData(0, this.dataStorage.lastCompatibilityConfigVersion, this.dataStorage.lastLanguageTranslationVersion);
+    }
+
     refreshDataForce() {
         return this.refreshData(0, 0, 0);
     }
