@@ -18,4 +18,10 @@ let myConfig = {
 };
 var test = new smart(myConfig, console.log);
 
+test.on('newDV', (deviceID) => {
+    console.log('new DeviceValue for' + JSON.stringify(deviceID));
+});
 
+test.on('newDI', (deviceID) => {
+    console.log('new DeviceInfo for ' + JSON.stringify(deviceID));
+});
