@@ -41,6 +41,10 @@ class SchellenbergApi extends EventEmitter {
         this.sessionService = new SessionService(this.mainSocket, this.mainConfig.sessionConfig);
         this.keepAliveService = new KeepAliveService(this.mainSocket);
         this.handler = new MessageHandler(4000, this.sessionService, this.dataStore, this.mainSocket);
+
+    }
+
+    setupEvents() {
         //Wrapping Events from the dataService, so when data Service gets reinitialized, the events dont drop
         //for objects outside wanting to recieve Events
         this.handler.on(Events.disconnected, () => {
@@ -73,6 +77,7 @@ class SchellenbergApi extends EventEmitter {
                         this.handler.refreshDataNormal();
                         this.keepAliveService.startKeepAlive();
                         this.attemptCount = 1;
+                        this.setupEvents();
                     })
                     .catch((error) => {
                         console.log('wau');
