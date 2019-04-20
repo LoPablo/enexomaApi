@@ -7,7 +7,31 @@ const DataStore = require('./DataStore/DataStore');
 const MessageHandler = require('./Comunication/DataHandler');
 const Events = require('./Helpers/Events');
 
+var myInstance = null;
+var myConfig = null;
+var myLog;
+
 class SchellenbergApi extends EventEmitter {
+
+    static configureInstance(inConfig, debugLog) {
+        myConfig = inConfig;
+        myLog = debugLog;
+    }
+
+    static getInstance() {
+        if (myInstance) {
+            return myInstance
+        } else {
+            myInstance = new SchellenbergApi(myConfig, myLog);
+            return myInstance
+        }
+    }
+
+    static renewInstance() {
+        if (myInstance) {
+            myInstance.reinitialize();
+        }
+    }
 
     constructor(inConfig, debugLog) {
         super();
@@ -23,7 +47,7 @@ class SchellenbergApi extends EventEmitter {
         this.setupEvents();
     }
 
-    reinitializePartly() {
+    reinitialize() {
         this.logService.debug('ReinitializePartly called. Will Reinitialize in one second');
         const instance = this;
         setTimeout(() => {
@@ -50,7 +74,7 @@ class SchellenbergApi extends EventEmitter {
         //Wrapping Events from the dataService, so when data Service gets reinitialized, the events dont drop
         //for objects outside wanting to recieve Events
         this.handler.on(Events.disconnected, () => {
-            instance.reinitializePartly();
+            SchellenbergApi.renewInstance();
         });
         this.handler.on(Events.apiError, (error) => {
             instance.logService.debugLog(error);
@@ -92,7 +116,7 @@ class SchellenbergApi extends EventEmitter {
                     setTimeout(() => {
                         instance.attemptCount += 1;
                         if (instance.attemptCount < 6) {
-                            instance.reinitializePartly();
+                            instance.reinitialize();
                         }
 
                     }, 60000);
