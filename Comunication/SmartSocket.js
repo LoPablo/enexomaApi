@@ -21,6 +21,7 @@ class SmartSocket {
     setupSocket(inMessageHandler) {
         const socketOptions = {
             timeout: 10000,
+            minVersion: 'TLSv1',
             host: this.config.host,
             port: this.config.port,
             ca: this.config.certificate,
