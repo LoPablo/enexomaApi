@@ -1,13 +1,23 @@
+//DataHandler.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Handles incoming messages from a SmartSocket and
+//emits Events defined in Helpers/Events
+//--------------------------------------------------
+
 const CommandFactory = require('../Comunication/CommandFactory');
 const EventEmitter = require('events');
 const Events = require('../Helpers/Events');
 
 class DataHandler extends EventEmitter {
 
-    constructor(inTimeout, inSessionService, inDataStorage, inSmartSocket) {
+    constructor(inTimeout, inSessionService, inDataStorage, inSmartSocket, inLogService) {
         super();
         this.sessionService = inSessionService;
         this.dataStorage = inDataStorage;
+        this.logService = inLogService;
         this.sessionService = inSessionService;
         this.disconnectHandlerRequested = false;
         this.smartSocket = inSmartSocket;
@@ -38,7 +48,6 @@ class DataHandler extends EventEmitter {
     }
 
     handleMainMessage(data) {
-        //console.log(data);
         if (data) {
             try {
                 const parsedData = JSON.parse(data);
@@ -83,7 +92,7 @@ class DataHandler extends EventEmitter {
                 this.updateLanguageTranslation(data);
             }
             if (data.newCompatibilityConfiguration) {
-                //TODO: implement
+                this.updateCompatibilityConfiguration(data)
             }
             if (data.responseMessage === 'newDeviceInfo') {
                 this.newDeviceInfo(data)
@@ -181,6 +190,13 @@ class DataHandler extends EventEmitter {
         }
     }
 
+    updateCompatibilityConfiguration(data) {
+        //TODO: Implement
+        //There are serveral cases that are to be considerd
+        //Also in the compatibility Config there are definied Commands. Maybe these can be used for more stuff
+        //and be checked against when sending a run command
+    }
+
     refreshDataNormal() {
         return this.refreshData(this.dataStorage.lastTimestamp, this.dataStorage.lastCompatibilityConfigVersion, this.dataStorage.lastLanguageTranslationVersion);
     }
@@ -197,31 +213,31 @@ class DataHandler extends EventEmitter {
         const instance = this;
         return new Promise((resolve, reject) => {
             instance.smartSocket.sendAndRecieveCommand(CommandFactory.createAllNewInfoCmd(timestamp, compatibilityConfigVersion, languageTranslationVersion), instance.sessionService.sessionID)
-            .catch((error) => {
-                reject(error);
-            })
-            .then((data) => {
-                if (data && data.currentTimestamp) {
-                    instance.dataStorage.lastTimestamp = data.currentTimestamp;
-                    if (data.newCompatibilityConfiguration) {
-                        //TODO:implement
+                .catch((error) => {
+                    reject(error);
+                })
+                .then((data) => {
+                    if (data && data.currentTimestamp) {
+                        instance.dataStorage.lastTimestamp = data.currentTimestamp;
+                        if (data.newCompatibilityConfiguration) {
+                            //TODO:implement
+                        }
+                        if (data.newLanguageTranslation) {
+                            this.updateLanguageTranslation(data.newLanguageTranslation);
+                        }
+                        if (data.newDeviceInfos) {
+                            data.newDeviceInfos.forEach((key) => {
+                                instance.updateDeviceInfo(key);
+                            });
+                        }
+                        if (data.newDeviceValues) {
+                            data.newDeviceValues.forEach((key) => {
+                                instance.updateDeviceValue(key);
+                            });
+                        }
                     }
-                    if (data.newLanguageTranslation) {
-                        this.updateLanguageTranslation(data.newLanguageTranslation);
-                    }
-                    if (data.newDeviceInfos) {
-                        data.newDeviceInfos.forEach((key) => {
-                            instance.updateDeviceInfo(key);
-                        });
-                    }
-                    if (data.newDeviceValues) {
-                        data.newDeviceValues.forEach((key) => {
-                            instance.updateDeviceValue(key);
-                        });
-                    }
-                }
-                resolve();
-            });
+                    resolve();
+                });
         });
     }
 
@@ -229,15 +245,15 @@ class DataHandler extends EventEmitter {
 
         return new Promise((resolve, reject) => {
             this.smartSocket.sendAndRecieveCommand(CommandFactory.createSetDeviceValueCmd(inDeviceId, inValue), this.sessionService.sessionID)
-            .then((data) => {
-                resolve();
-            })
-            .catch((err) => {
-                reject(err);
-            });
+                .then((data) => {
+                    resolve();
+                })
+                .catch((err) => {
+                    reject(err);
+                });
         });
     }
-    
+
 
 }
 

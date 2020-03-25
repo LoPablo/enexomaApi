@@ -1,3 +1,11 @@
+//SchellenbergApi.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Main file
+//--------------------------------------------------
+
 const EventEmitter = require('events');
 const LogService = require('./Service/LogService');
 const SmartSocket = require('./Comunication/SmartSocket');
@@ -40,7 +48,7 @@ class SchellenbergApi extends EventEmitter {
             return;
         }
         this.mainConfig = inConfig;
-        this.logService = new LogService(this.debugLog);
+        this.logService = new LogService(this.mainConfig.debugConfig);
         this.attemptCount = 1;
         this.setupServices();
         this.setupSocket();
@@ -61,29 +69,29 @@ class SchellenbergApi extends EventEmitter {
     }
 
     setupServices() {
-        const instance = this;
         this.dataStore = new DataStore();
         this.mainSocket = new SmartSocket(this.mainConfig.smartSocketConfig, this.logService);
-        this.sessionService = new SessionService(this.mainSocket, this.mainConfig.sessionConfig);
+        this.sessionService = new SessionService(this.mainSocket, this.mainConfig.sessionConfig, this.logService);
         this.keepAliveService = new KeepAliveService(this.mainSocket);
-        this.handler = new MessageHandler(4000, this.sessionService, this.dataStore, this.mainSocket);
+        this.handler = new MessageHandler(4000, this.sessionService, this.dataStore, this.mainSocket, this.logService);
 
     }
 
     setupEvents() {
         //Wrapping Events from the dataService, so when data Service gets reinitialized, the events dont drop
         //for objects outside wanting to recieve Events
+        const instance = this;
         this.handler.on(Events.disconnected, () => {
             SchellenbergApi.renewInstance();
         });
         this.handler.on(Events.apiError, (error) => {
-            instance.logService.debugLog(error);
+            instance.logService.debugLog(error, this);
         });
         this.handler.on(Events.jsonParseError, (error) => {
-            instance.logService.debugLog(error);
+            instance.logService.debugLog(error, this);
         });
         this.handler.on(Events.internalError, (error) => {
-            instance.logService.debugLog(error);
+            instance.logService.debugLog(error, this);
         });
         this.handler.on(Events.newDeviceInfo, (eventIn) => {
             this.emit(Events.newDeviceInfo, eventIn);
@@ -98,13 +106,14 @@ class SchellenbergApi extends EventEmitter {
             .then(() => {
                 this.sessionService.requestSession()
                     .then(() => {
-                        console.log(this.sessionService.sessionID);
+                        this.logService.debug("Session ID: " + this.sessionService.sessionID, this);
                         this.handler.refreshDataNormal();
                         this.keepAliveService.startKeepAlive();
                         this.attemptCount = 1;
                         this.emit(Events.connected);
                     })
                     .catch((error) => {
+                        this.logService.error(error, this);
                         this.handler.disconnectHandler();
                     });
             })
@@ -112,7 +121,7 @@ class SchellenbergApi extends EventEmitter {
                 const instance = this;
                 if (instance.attemptCount < 6) {
                     this.logService.error(error);
-                    this.logService.error("There was an Error setting up the socket, trying again in one minute (Attempt " + this.attemptCount + " of 5).");
+                    this.logService.error("There was an Error setting up the socket, trying again in one minute (Attempt " + this.attemptCount + " of 5).", this);
                     setTimeout(() => {
                         instance.attemptCount += 1;
                         if (instance.attemptCount < 6) {
@@ -121,7 +130,7 @@ class SchellenbergApi extends EventEmitter {
 
                     }, 60000);
                 } else {
-                    this.logService.error("There was an Error setting up the socket, quitting.")
+                    this.logService.error("There was an Error setting up the socket, quitting.", this)
                 }
 
             });

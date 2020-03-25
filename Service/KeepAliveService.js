@@ -1,3 +1,12 @@
+//KeepAliveService.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//periodic sending a keep alive command, the App and
+//Java App is doing this dont know if it is needed
+//--------------------------------------------------
+
 const CommandFactory = require('../Comunication/CommandFactory');
 
 class KeepAliveService {
