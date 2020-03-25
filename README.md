@@ -33,7 +33,7 @@ let myConfig = {
     },
     smartSocketConfig: {
         host: '10.10.80.150', //ip goes here
-        port: '4300', //my port was 430 maybe different, may use portcan
+        port: '4300', //my port was 430 maybe different, may use portscan
         certificate: FileSystem.readFileSync('./Comunication/CA.pem') //extracted cert from app
     }
 };
