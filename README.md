@@ -48,3 +48,12 @@ example.on('newDI', (deviceID) => {
 });
 
 ```
+
+The Smart Friends Gateway should work with the following values. Thanks to @drbiosignals
+```
+cSymbol: 'D19033',
+cSymbolAddon: 'i',
+shcVersion: '2.1.0',
+shApiVersion: '2.1'
+```
+
