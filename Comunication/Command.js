@@ -1,3 +1,11 @@
+//Command.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Wrapper for easily gernating JSON Commands
+//--------------------------------------------------
+
 class Command {
 
     constructor(inCommand) {

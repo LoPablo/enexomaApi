@@ -1,10 +1,19 @@
+//SessionService.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Helper to setup the session to the gateway
+//--------------------------------------------------
+
 const CommandFactory = require('../Comunication/CommandFactory');
 const LoginHelper = require("../Helpers/LoginHelper");
 
 class SessionService {
-    constructor(inSmartSocket, inSessionConfig) {
+    constructor(inSmartSocket, inSessionConfig, inLogService) {
         this.smartSocket = inSmartSocket;
         this.sessionConfig = inSessionConfig;
+        this.logService = inLogService;
         this.salt = null;
         this.sessionSalt = null;
         this.sessionID = null;
@@ -23,7 +32,7 @@ class SessionService {
             }).catch((error) => {
                 reject(error);
             }).then((data) => {
-                console.log(data);
+                this.logService.debug("Login Message recieved" + JSON.stringify(data), this);
                 return instance.parseLoginMessage(data);
             }).catch((error) => {
                 reject(error);

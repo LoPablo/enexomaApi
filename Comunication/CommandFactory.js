@@ -1,3 +1,11 @@
+//CommandFactory.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Uses Command Wrapper to generate JSON-Commands
+//--------------------------------------------------
+
 const Command = require('./Command');
 
 class CommandFactory {

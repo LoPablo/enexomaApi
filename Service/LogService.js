@@ -1,34 +1,39 @@
+//LogService.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 class LogService {
 
-    constructor(debugLog, normalLog, errorLog) {
-        if (normalLog) {
-            this.normalLog = normalLog;
-        } else {
-            this.normalLog = console.log;
-        }
-        if (debugLog) {
-            this.debugLog = debugLog;
-        } else {
-            this.debugLog = () => {
-            };
-        }
-        if (errorLog) {
-            this.errorLog = errorLog;
-        } else {
-            this.errorLog = console.error;
+    constructor(inDebugConfig) {
+        this.config = inDebugConfig;
+        this.debugLog = console.debug;
+        this.errorLog = console.error;
+    }
+
+    debug(debugMessage, classname) {
+        if (this.config.debugLog) {
+            var currentTime = new Date();
+            if (typeof debugMessage !== 'undefined' && debugMessage) {
+                if (typeof classname !== 'undefined' && classname) {
+                    this.debugLog(currentTime.toISOString() + " [" + classname.constructor.name + "] " + debugMessage);
+                } else {
+                    this.debugLog(debugMessage);
+                }
+            }
         }
     }
 
-    log(message) {
-        this.normalLog(message);
-    }
-
-    debug(debugMessage) {
-        this.debugLog(debugMessage);
-    }
-
-    error(errorMessage) {
-        this.errorLog(errorMessage);
+    error(errorMessage, classname) {
+        var currentTime = new Date();
+        if (typeof errorMessage !== 'undefined' && errorMessage) {
+            if (typeof classname !== 'undefined' && classname) {
+                this.errorLog(currentTime.toISOString() + " [" + classname.constructor.name + "] " + errorMessage);
+            } else {
+                this.errorLog(errorMessage);
+            }
+        }
     }
 
 

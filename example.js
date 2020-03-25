@@ -1,7 +1,10 @@
 const FileSystem = require('fs');
 const smart = require('./SchellenbergApi');
-const Events = require('./Helpers/Events');
+
 let myConfig = {
+    debugConfig: {
+        debugLog: true
+    },
     sessionConfig: {
         username: 'UserGoesHERE',
         password: 'PASSWORDgoesHERE',
@@ -16,12 +19,12 @@ let myConfig = {
         certificate: FileSystem.readFileSync('./Comunication/CA.pem') //extracted cert from app
     }
 };
-var test = new smart(myConfig, console.log);
+var example = new smart(myConfig, console.log);
 
-test.on('newDV', (deviceID) => {
+example.on('newDV', (deviceID) => {
     console.log('new DeviceValue for' + JSON.stringify(deviceID));
 });
 
-test.on('newDI', (deviceID) => {
+example.on('newDI', (deviceID) => {
     console.log('new DeviceInfo for ' + JSON.stringify(deviceID));
 });

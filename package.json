@@ -1,7 +1,7 @@
 {
   "name": "schellenbergapi",
-  "version": "0.5.1",
-  "description": "Api for using with the Schellenberg Smart Home Gateway",
+  "version": "0.6",
+  "description": "Api for using with the Schellenberg/Enexoma/SmartFriends Smart Home Gateway",
   "main": "SchellenbergApi.js",
   "author": "Pascal Hartmann",
   "license": "ISC",

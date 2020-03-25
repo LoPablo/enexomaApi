@@ -1,9 +1,17 @@
-//modified https://codereview.stackexchange.com/questions/105754/access-resolve-function-outside-of-a-javascript-promise
+//Deffered.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Helper Class for promises
+//modified from
+//https://codereview.stackexchange.com/questions/105754/access-resolve-function-outside-of-a-javascript-promise
+//--------------------------------------------------
+
 
 class Deffered {
     constructor(callback) {
         const instance = this;
-
         // Catch the resolve and reject
         this._resolver = null;
         this._rejector = null;

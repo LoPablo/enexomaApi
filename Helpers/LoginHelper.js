@@ -1,3 +1,13 @@
+//LoginHelper.js
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Helper class to deal with all kind of hashing and
+//salt nonsense the gateway requires to login a
+//user
+//--------------------------------------------------
+
 const crypt = require('crypto');
 const base64 = require('base-64');
 
@@ -5,7 +15,7 @@ class LoginHelper {
 
     static calculateDigest(password, salt, sessionSalt) {
         const hashedPassword = this.getHash('sha256', password, salt);
-        return this.getHash('sha1', hashedPassword, sessionSalt);
+        return this.getHash('sha1', hashedPassword, sessionSalt)
     }
 
     // https://stackoverflow.com/questions/3195865 modified because of javascript handling chars differently
