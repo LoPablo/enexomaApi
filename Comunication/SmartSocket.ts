@@ -1,4 +1,4 @@
-//SmartSocket.js
+//SmartSocket.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
@@ -7,109 +7,132 @@
 //events occurring and passing on received data
 //--------------------------------------------------
 
-const Deffered = require('../Helpers/Deffered');
-const Tls = require('tls');
+import Deffered from '../Helpers/Deffered';
+import * as tls from "tls";
+import DataDelegateInterface from "./DataDelegateInterface";
+import {factory} from "../Helpers/Logger";
+import JSONCommand from "./Model/JSONCommand";
+import JSONResponse from "./Model/JSONResponse";
+import {PeerCertificate} from "tls";
+import CommandFactory from "./CommandFactory";
+
+const log = factory.getLogger("Communication.SmartSocket");
+
+export default class SmartSocket {
+
+    private ipAddress: string;
+    private port: number;
+    private certText: string;
+
+    private internalSocket?: tls.TLSSocket;
+    private dataDelegate?: DataDelegateInterface;
+    private tempByteChunk: string;
+    private keepAliveHandler?: ReturnType<typeof setInterval>;
 
 
-class SmartSocket {
-
-    constructor(inConfig, inLogService) {
-        this.logService = inLogService;
-        if (inConfig) {
-            this.config = inConfig;
-        } else {
-            this.config = defaultConfig;
-        }
-        this.connection = null;
-        this.handler = null;
-        this.tempChunk = '';
-        this.logService.debug("Constructor finished", this);
+    constructor(ipAddress: string, port: number, certText: string) {
+        this.ipAddress = ipAddress;
+        this.certText = certText;
+        this.port = port;
+        this.tempByteChunk = '';
+        log.debug("Constructor finished");
     }
 
-    setupSocket(inMessageHandler) {
-        const socketOptions = {
+    public setDelegate(dataDelegate: DataDelegateInterface) {
+        this.dataDelegate = dataDelegate
+    }
+
+    public setupSocket(dataDelegate?: DataDelegateInterface): Promise<void> {
+        log.debug("Setting Up Socket")
+        const socketOptions: tls.ConnectionOptions = {
             timeout: 10000,
             minVersion: 'TLSv1',
-            host: this.config.host,
-            port: this.config.port,
-            ca: this.config.certificate,
-            rejectUnauthorized: false,
-            checkServerIdentity: function (host, cert) {
-                //console.log(cert);
+            host: this.ipAddress,
+            port: this.port,
+            ca: this.certText,
+            rejectUnauthorized: true,
+            checkServerIdentity: (host: string, cert: PeerCertificate): Error | any => {
+                log.debug('Cert issuer Organization: ' + cert.issuer.O)
             }
+
         };
-        this.logService.debug("Setup with socketOptions: " + JSON.stringify(socketOptions), this);
-        this.handler = inMessageHandler;
-
         return new Promise((resolve, reject) => {
-
-            this.connection = Tls.connect(socketOptions, () => {
-                this.connection.on('error', (err) => {
-                    this.logService.error(err, this);
-                    setImmediate(() => {
-                        if (typeof this.handler !== 'undefined' && this.handler) {
-                            this.handler.disconnectHandler();
-                        }
+            if (dataDelegate) {
+                this.dataDelegate = dataDelegate;
+            }
+            this.internalSocket = tls.connect(socketOptions, () => {
+                if (this.internalSocket) {
+                    this.internalSocket.on('error', (err) => {
+                        log.error("Setup connection error" + err.toString());
+                        setImmediate(() => {
+                            if (this.dataDelegate) {
+                                this.dataDelegate.handleDisconnect();
+                            }
+                        });
                     });
-                });
-                if (!this.connection.authorized) {
-                    this.logService.error("Setup connection not authorized with Error: " + this.connection.authorizationError, this);
-                    reject('Setup connection not authorized with Error: ' + this.connection.authorizationError);
-                } else {
-                    this.connection.setEncoding('utf8');
-                    this.setupSocketEvents();
-                    this.logService.debug("Setup finished successfully", this);
-                    resolve();
+                    if (!this.internalSocket.authorized) {
+                        log.error("Setup connection not authorized with Error: " + this.internalSocket.authorizationError);
+                        reject(this.internalSocket.authorizationError.toString());
+                    } else {
+                        this.internalSocket.setEncoding('utf8');
+                        this.setupSocketEvents();
+                        log.debug("Setup Socket successfully");
+                        resolve();
+                    }
                 }
+
+
             })
                 .on('error', (err) => {
-                    this.logService.error(err, this);
-                    reject(err);
+                    log.error("Error occured: " + err.toString());
+                    reject(err.toString());
                 });
         });
     }
 
     setupSocketEvents() {
-        this.logService.debug("Setup socket Event", this);
-        this.connection.on('data', (data) => {
-            if (data.indexOf('\n') < 0) {
-                this.tempChunk += data;
-            } else {
-                this.tempChunk += data;
-                let tempSplit = this.tempChunk.split("\n");
-                for (var tempSplitString of tempSplit) {
-                    if (tempSplitString !== "") {
-                        this.logService.debug("Recieved Data: " + tempSplitString, this);
+        log.debug("Setting up Socket-Events");
+        if (this.internalSocket) {
+            this.internalSocket.on('data', (data) => {
+                if (data.indexOf('\n') < 0) {
+                    this.tempByteChunk += data.toString();
+                } else {
+                    this.tempByteChunk += data.toString();
+                    let tempSplit = this.tempByteChunk.split("\n");
+                    for (var tempSplitString of tempSplit) {
+                        if (tempSplitString !== "") {
+                            log.debug("Recieved Data: " + tempSplitString);
+                            if (this.dataDelegate) {
+                                this.dataDelegate.handleMessage(tempSplitString);
+                            }
+                        }
                     }
-                    if (typeof this.handler !== 'undefined' && this.handler) {
-                        this.handler.handleMainMessage(tempSplitString);
-                    }
-                }
-                this.tempChunk = '';
-            }
-        });
-        this.connection.on('timeout', () => {
-            setTimeout(() => {
-                this.logService.error("Socket Timeout", this);
-                self.renewSocket()
-            }, 0);
-        });
-        this.connection.on('end', () => {
-            this.logService.debug("Socket End", this);
-            setImmediate(() => {
-                if (typeof this.handler !== 'undefined' && this.handler) {
-                    this.handler.disconnectHandler();
+                    this.tempByteChunk = '';
                 }
             });
-        });
-        this.connection.on('close', () => {
-            this.logService.debug("Socket Close", this);
-            setImmediate(() => {
-                if (typeof this.handler !== 'undefined' && this.handler) {
-                    this.handler.disconnectHandler();
-                }
+            this.internalSocket.on('timeout', () => {
+                log.debug("Socket timed out");
+                setTimeout(() => {
+                    //this.renewSocket()
+                }, 0);
             });
-        });
+            this.internalSocket.on('end', () => {
+                log.debug("Socket ended");
+                setImmediate(() => {
+                    if (this.dataDelegate) {
+                        this.dataDelegate.handleDisconnect();
+                    }
+                });
+            });
+            this.internalSocket.on('close', () => {
+                log.debug("Socket closed");
+                setImmediate(() => {
+                    if (this.dataDelegate) {
+                        this.dataDelegate.handleDisconnect();
+                    }
+                });
+            });
+        }
     }
 
     public startKeepAlive() {
@@ -127,13 +150,13 @@ class SmartSocket {
     //only sending command without waiting for response in the local MessageHandler.
     // Does not resolve when send fails.
     //be advised, that a may occurring response is discarded and may result in an error
-    sendCommand(command, sessionkey) {
-        const instance = this;
-        const localPromise = new Deffered((resolve, reject) => {
-            if (instance.connection && command) {
-                this.logService.debug("Send Command: " + command.toString(), this);
-                instance.connection.write(command.toString());
-                instance.connection.write('\n');
+    sendJSONCommand(command: JSONCommand, sessionkey?: string): Deffered<void> {
+        log.debug("Sending Command with methode: " + command.command)
+        const localPromise = new Deffered<void>((resolve, reject) => {
+            if (this.internalSocket && command) {
+                log.debug("Send JSON: " + command.toString());
+                this.internalSocket.write(command.toString());
+                this.internalSocket.write('\n');
                 resolve();
             } else {
                 log.debug("Error sending command. Check Socket or JSONCommand")
@@ -146,19 +169,18 @@ class SmartSocket {
     //sends command and waits for receive in the promise queue of the message handler
     //don't know if the output socket of the gateway is in-order, so maybe there needs
     //to be some checking
-    sendAndRecieveCommand(command, sessionkey) {
-        const instance = this;
-        const localPromise = new Deffered((resolve, reject) => {
-            if (instance.connection && command) {
-                this.logService.debug("Send and Recieve Command: " + command.toString(sessionkey), this);
-                instance.connection.write(command.toString(sessionkey));
-                instance.connection.write('\n');
+    sendAndRecieveCommand(command: JSONCommand, sessionkey?: string): Deffered<JSONResponse> {
+        const localPromise = new Deffered<JSONResponse>((resolve, reject) => {
+            if (this.internalSocket && command) {
+                log.debug("Send and Recieve JSON: " + command.toString(sessionkey));
+                this.internalSocket.write(command.toString(sessionkey));
+                this.internalSocket.write('\n');
             } else {
                 reject();
             }
         });
-        if (typeof this.handler !== 'undefined' && this.handler) {
-            this.handler.queueUpPromise(localPromise);
+        if (this.dataDelegate) {
+            this.dataDelegate.queueUpPromise(localPromise);
         }
         return localPromise;
     }
