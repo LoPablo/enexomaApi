@@ -112,6 +112,18 @@ class SmartSocket {
         });
     }
 
+    public startKeepAlive() {
+        this.keepAliveHandler = setInterval(() => {
+            this.sendJSONCommand(CommandFactory.createKeepAliveCmd())
+        }, 5000);
+    }
+
+    public stopKeepAlive() {
+        if (this.keepAliveHandler) {
+            clearInterval(this.keepAliveHandler);
+        }
+    }
+
     //only sending command without waiting for response in the local MessageHandler.
     // Does not resolve when send fails.
     //be advised, that a may occurring response is discarded and may result in an error
@@ -124,9 +136,11 @@ class SmartSocket {
                 instance.connection.write('\n');
                 resolve();
             } else {
-                reject();
+                log.debug("Error sending command. Check Socket or JSONCommand")
+                reject("Something went wrong");
             }
         });
+        return localPromise;
     }
 
     //sends command and waits for receive in the promise queue of the message handler
@@ -148,6 +162,7 @@ class SmartSocket {
         }
         return localPromise;
     }
+
 }
 
 module.exports = SmartSocket;
