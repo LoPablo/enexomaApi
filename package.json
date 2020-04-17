@@ -6,7 +6,10 @@
   "author": "Pascal Hartmann",
   "license": "ISC",
   "dependencies": {
-    "base-64": "^0.1.0"
+    "base-64": "^0.1.0",
+    "hap-nodejs": "^0.5.11",
+    "typescript": "^3.8.3",
+    "typescript-logging": "^0.6.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/LoPablo/SchellenbergApi/issues"
   },
-  "homepage": "https://github.com/LoPablo/SchellenbergApi#readme"
+  "homepage": "https://github.com/LoPablo/SchellenbergApi#readme",
+  "devDependencies": {
+    "ts-node": "^8.8.2"
+  }
 }
