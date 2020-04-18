@@ -1,7 +1,7 @@
 import Deffered from "../helpers/Deffered";
-import JSONResponse from "./Model/JSONResponse";
-import LoginResponse from "./Model/ResponseBody/LoginResponse";
-import NewDeviceValue from "./Model/ResponseBody/NewDeviceValue";
+import JSONResponse from "./comModel/JSONResponse";
+import LoginResponse from "./comModel/responseBody/LoginResponse";
+import DeviceValue from "./comModel/responseBody/DeviceValue";
 import SmartSocket from "./SmartSocket";
 
 export default interface DataDelegateInterface {
@@ -13,7 +13,7 @@ export default interface DataDelegateInterface {
 
     handleLoginMessage(response: LoginResponse);
 
-    handleNewDeviceValue(response: NewDeviceValue);
+    handleNewDeviceValue(response: DeviceValue);
 
     resolveNextPromise(response: JSONResponse);
 

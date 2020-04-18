@@ -11,8 +11,8 @@ import Deffered from '../helpers/Deffered';
 import * as tls from "tls";
 import DataDelegateInterface from "./DataDelegateInterface";
 import {factory} from "../helpers/Logger";
-import JSONCommand from "./Model/JSONCommand";
-import JSONResponse from "./Model/JSONResponse";
+import JSONCommand from "./comModel/JSONCommand";
+import JSONResponse from "./comModel/JSONResponse";
 import {PeerCertificate} from "tls";
 import CommandFactory from "./CommandFactory";
 

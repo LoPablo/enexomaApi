@@ -4,8 +4,8 @@
 //See LICENSE File
 //--------------------------------------------------
 //Uses Command Wrapper to generate JSON-Commands
-import JSONCommand from "./Model/JSONCommand";
-import JSONHelper from "./Model/JSONHelper";
+import JSONCommand from "./comModel/JSONCommand";
+import JSONHelper from "./comModel/JSONHelper";
 
 export default class CommandFactory {
 

@@ -8,22 +8,22 @@
 
 import JSONHelper from "../JSONHelper";
 
-export default class NewDeviceValue {
+export default class DeviceValue {
 
-    deviceID?: string;
-    masterDeviceID?: string;
+    deviceID?: number;
+    masterDeviceID?: number;
     value?: string;
     valueTimestamp?: Date;
 
-    constructor(deviceID?: string, masterDeviceID?: string, value?: string, valueTimestamp?: Date) {
+    constructor(deviceID?: number, masterDeviceID?: number, value?: string, valueTimestamp?: Date) {
         this.deviceID = deviceID;
         this.masterDeviceID = masterDeviceID;
         this.value = value;
         this.valueTimestamp = valueTimestamp;
     }
 
-    static fromObject(object: any): NewDeviceValue {
-        return new NewDeviceValue(
+    static fromObject(object: any): DeviceValue {
+        return new DeviceValue(
             object.deviceID,
             object.masterDeviceID,
             object.value,

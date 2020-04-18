@@ -1,17 +1,17 @@
-import NewDeviceValue from "./NewDeviceValue";
+import DeviceValue from "./DeviceValue";
 
 export default class NewDeviceValues {
 
-    values?: NewDeviceValue[]
+    values?: DeviceValue[];
 
-    constructor(values?: NewDeviceValue[]) {
+    constructor(values?: DeviceValue[]) {
         this.values = values;
     }
 
     static fromObject(object: any): NewDeviceValues {
-        let tempValues: NewDeviceValue[] = [];
+        let tempValues: DeviceValue[] = [];
         for (let valueEntry of object) {
-            tempValues.push(NewDeviceValue.fromObject(valueEntry));
+            tempValues.push(DeviceValue.fromObject(valueEntry));
         }
         return new NewDeviceValues(
             tempValues

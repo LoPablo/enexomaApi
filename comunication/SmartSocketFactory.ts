@@ -3,8 +3,8 @@ import fs from "fs";
 import DataDelegateInterface from "./DataDelegateInterface";
 import CommandFactory from "./CommandFactory";
 import HashHelper from "./HashHelper";
-import HeloResponse from "./Model/ResponseBody/HeloResponse";
-import LoginResponse from "./Model/ResponseBody/LoginResponse";
+import HeloResponse from "./comModel/responseBody/HeloResponse";
+import LoginResponse from "./comModel/responseBody/LoginResponse";
 
 export default class SmartSocketFactory {
 
