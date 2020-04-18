@@ -8,8 +8,7 @@
 
 import JSONHelper from "../JSONHelper";
 
-
-export default class JSONNewDeviceValueResponse {
+export default class NewDeviceValue {
 
     deviceID?: string;
     masterDeviceID?: string;
@@ -23,13 +22,13 @@ export default class JSONNewDeviceValueResponse {
         this.valueTimestamp = valueTimestamp;
     }
 
-    static fromObject(object: any): JSONNewDeviceValueResponse {
-        return new JSONNewDeviceValueResponse(
+    static fromObject(object: any): NewDeviceValue {
+        return new NewDeviceValue(
             object.deviceID,
             object.masterDeviceID,
             object.value,
             JSONHelper.stringToDate(object.valueTimestamp)
-        )
+        );
     }
 
 }

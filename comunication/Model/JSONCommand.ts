@@ -9,15 +9,15 @@
 export default class JSONCommand {
 
     command: string;
-    sessionId?: string;
+    sessionID?: string;
 
     public constructor(methode: string) {
         this.command = methode;
     }
 
-    public toString(sessionId?: string): string {
-        if (sessionId) {
-            this.sessionId = sessionId
+    public toString(sessionID?: string): string {
+        if (sessionID) {
+            this.sessionID = sessionID;
         }
         return JSON.stringify(this);
     }

@@ -7,10 +7,10 @@
 //events occurring and passing on received data
 //--------------------------------------------------
 
-import Deffered from '../Helpers/Deffered';
+import Deffered from '../helpers/Deffered';
 import * as tls from "tls";
 import DataDelegateInterface from "./DataDelegateInterface";
-import {factory} from "../Helpers/Logger";
+import {factory} from "../helpers/Logger";
 import JSONCommand from "./Model/JSONCommand";
 import JSONResponse from "./Model/JSONResponse";
 import {PeerCertificate} from "tls";
@@ -184,6 +184,7 @@ export default class SmartSocket {
         }
         return localPromise;
     }
+
 
 }
 

@@ -6,7 +6,6 @@
     "allowJs": false,
     "noEmit": true,
     "strict": true,
-    "isolatedModules": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "lib": [

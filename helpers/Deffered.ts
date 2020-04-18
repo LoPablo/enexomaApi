@@ -19,7 +19,7 @@ export default class Deferred<T> implements Promise<T> {
     constructor(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void) {
         this.timeout = setTimeout(() => {
             this.reject("timeout")
-        }, 500000)
+        }, 5000)
         this.promise = new Promise((resolve, reject) => {
                 this._resolveSelf = resolve
                 this._rejectSelf = reject

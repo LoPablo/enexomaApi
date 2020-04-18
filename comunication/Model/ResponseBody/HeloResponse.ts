@@ -1,4 +1,4 @@
-//JSONHeloResponse.ts
+//HeloResponse.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
@@ -6,10 +6,7 @@
 //Wrapper for Response answers
 //--------------------------------------------------
 
-import JSONHelper from "../JSONHelper";
-
-
-export default class JSONHeloResponse {
+export default class HeloResponse {
 
     salt?: string;
     sessionSalt?: string;
@@ -19,8 +16,8 @@ export default class JSONHeloResponse {
         this.sessionSalt = sessionSalt;
     }
 
-    static fromObject(object: any): JSONHeloResponse {
-        return new JSONHeloResponse(
+    static fromObject(object: any): HeloResponse {
+        return new HeloResponse(
             object.salt,
             object.sessionSalt
         )

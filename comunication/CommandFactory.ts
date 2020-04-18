@@ -5,6 +5,7 @@
 //--------------------------------------------------
 //Uses Command Wrapper to generate JSON-Commands
 import JSONCommand from "./Model/JSONCommand";
+import JSONHelper from "./Model/JSONHelper";
 
 export default class CommandFactory {
 
@@ -12,8 +13,8 @@ export default class CommandFactory {
         return new loginCommand(username, digest, cSymbol, shcVersion, shApiVersion);
     }
 
-    public static createAllNewInfoCmd(timestamp: string, compatibilityConfigurationVersion: string, languageTranslationVersion: string): allNewInfoCommand {
-        return new allNewInfoCommand(timestamp, compatibilityConfigurationVersion, languageTranslationVersion);
+    public static createAllNewInfoCmd(timestamp: Date, compatibilityConfigurationVersion: string, languageTranslationVersion: string): allNewInfoCommand {
+        return new allNewInfoCommand(JSONHelper.dateToString(timestamp), compatibilityConfigurationVersion, languageTranslationVersion);
     }
 
     public static createSetDeviceValueCmd(inDeviceId, inValue): setDeviceValueCommand {

@@ -1,4 +1,4 @@
-//JSONHeloResponse.ts
+//HeloResponse.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
@@ -6,18 +6,15 @@
 //Wrapper for Response answers
 //--------------------------------------------------
 
-import JSONHelper from "../JSONHelper";
+export default class LoginResponse {
 
+    hardware: string;
+    macAddress: string;
+    pushNotificationUrl: string;
+    sessionID: string;
+    shsVersion: string;
 
-export default class JSONLoginResponse {
-
-    hardware?: string;
-    macAddress?: string;
-    pushNotificationUrl?: string;
-    sessionID?: string;
-    shsVersion?: string;
-
-    constructor(hardware?: string, macAddress?: string, pushNotificationUrl?: string, sessionID?: string, shsVersion?: string) {
+    constructor(hardware: string, macAddress: string, pushNotificationUrl: string, sessionID: string, shsVersion: string) {
         this.hardware = hardware;
         this.macAddress = macAddress;
         this.pushNotificationUrl = pushNotificationUrl;
@@ -26,8 +23,8 @@ export default class JSONLoginResponse {
 
     }
 
-    static fromObject(object: any): JSONLoginResponse {
-        return new JSONLoginResponse(
+    static fromObject(object: any): LoginResponse {
+        return new LoginResponse(
             object.hardware,
             object.macAddress,
             object.pushNotificationUrl,

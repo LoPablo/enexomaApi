@@ -3,8 +3,8 @@ import fs from "fs";
 import DataDelegateInterface from "./DataDelegateInterface";
 import CommandFactory from "./CommandFactory";
 import HashHelper from "./HashHelper";
-import JSONHeloResponse from "./Model/ResponseBody/JSONHeloResponse";
-import JSONLoginResponse from "./Model/ResponseBody/JSONLoginResponse";
+import HeloResponse from "./Model/ResponseBody/HeloResponse";
+import LoginResponse from "./Model/ResponseBody/LoginResponse";
 
 export default class SmartSocketFactory {
 
@@ -21,13 +21,13 @@ export default class SmartSocketFactory {
                                 .then(responseHelo => {
 
                                     if (responseHelo.response) {
-                                        let parsedResponseHelo: JSONHeloResponse = JSONHeloResponse.fromObject(responseHelo.response);
+                                        let parsedResponseHelo: HeloResponse = HeloResponse.fromObject(responseHelo.response);
                                         if (parsedResponseHelo && parsedResponseHelo.salt && parsedResponseHelo.sessionSalt) {
                                             let digest = HashHelper.calculateDigest(password, parsedResponseHelo.salt, parsedResponseHelo.sessionSalt);
                                             socket.sendAndRecieveCommand(CommandFactory.createLoginCommand(username, digest, cSymbol, shcVersion, shApiVersion))
                                                 .then(responseLogin => {
                                                     if (responseLogin.response) {
-                                                        let parsedResponseLogin: JSONLoginResponse = JSONLoginResponse.fromObject(responseLogin.response)
+                                                        let parsedResponseLogin: LoginResponse = LoginResponse.fromObject(responseLogin.response)
                                                         if (parsedResponseLogin && parsedResponseLogin.sessionID) {
                                                             dataHandler.handleLoginMessage(parsedResponseLogin);
                                                             if (startKeepAlive) {

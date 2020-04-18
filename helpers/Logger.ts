@@ -4,6 +4,7 @@ import {LoggerFactory, LoggerFactoryOptions, LFService, LogGroupRule, LogLevel} 
 const options = new LoggerFactoryOptions()
     .addLogGroupRule(new LogGroupRule(new RegExp("Communication.+"), LogLevel.Debug))
     .addLogGroupRule(new LogGroupRule(new RegExp("Main.+"), LogLevel.Debug))
+    .addLogGroupRule(new LogGroupRule(new RegExp("Main.+"), LogLevel.Error))
     .addLogGroupRule(new LogGroupRule(new RegExp(".+"), LogLevel.Info));
 
 // Create a named loggerfactory and pass in the options and export the factory.
