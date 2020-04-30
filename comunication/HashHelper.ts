@@ -23,6 +23,7 @@ export default class HashHelper {
         let result: number[] = [];
         for (let i = 0; i < str.length; i++) {
             let p = str.charCodeAt(i);
+            console.log(p)
             if (p > 128) {
                 result.push(p - 256);
             } else {
@@ -37,7 +38,9 @@ export default class HashHelper {
         let saltArray = this.string2Bin(decode);
         let passwordArray = this.string2Bin(password);
         let pasConSalt = passwordArray.concat(saltArray)
+        let test: Uint8Array = new Uint8Array(pasConSalt);
         let cryptHash = crypto.createHash(method).update(new Uint8Array(pasConSalt));
+
         return cryptHash.digest('base64');
     }
 }

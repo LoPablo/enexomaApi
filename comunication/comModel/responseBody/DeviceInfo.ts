@@ -1,4 +1,9 @@
-import JSONHelper from "../JSONHelper";
+//DeviceInfo.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 
 export default class DeviceInfo {
 

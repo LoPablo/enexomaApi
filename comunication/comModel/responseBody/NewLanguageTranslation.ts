@@ -1,3 +1,9 @@
+//NewLanguageTranslation.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 import LanguageTranslation from "./LanguageTranslation";
 
 export default class NewLanguageTranslation {

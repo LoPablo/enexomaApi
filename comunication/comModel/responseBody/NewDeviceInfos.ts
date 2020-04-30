@@ -1,3 +1,9 @@
+//NewDeviceInfos.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 import DeviceInfo from "./DeviceInfo";
 
 export default class NewDeviceInfos {

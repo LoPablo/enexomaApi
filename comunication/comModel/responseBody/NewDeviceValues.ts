@@ -1,3 +1,9 @@
+//NewDeviceValues.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 import DeviceValue from "./DeviceValue";
 
 export default class NewDeviceValues {

@@ -1,9 +1,7 @@
-//HeloResponse.ts
+//LoginResponse.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
-//--------------------------------------------------
-//Wrapper for Response answers
 //--------------------------------------------------
 
 export default class LoginResponse {

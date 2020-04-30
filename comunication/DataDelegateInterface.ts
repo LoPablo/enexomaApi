@@ -1,8 +1,14 @@
+//DataDelegateInterface.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 import Deffered from "../helpers/Deffered";
 import JSONResponse from "./comModel/JSONResponse";
 import LoginResponse from "./comModel/responseBody/LoginResponse";
 import DeviceValue from "./comModel/responseBody/DeviceValue";
-import SmartSocket from "./SmartSocket";
+import JSONCommand from "./comModel/JSONCommand";
 
 export default interface DataDelegateInterface {
     queueUpPromise(promise: Deffered<JSONResponse>);
@@ -18,4 +24,6 @@ export default interface DataDelegateInterface {
     resolveNextPromise(response: JSONResponse);
 
     rejectNextPromise(reason: any);
+
+    sendCommand(command: JSONCommand);
 }

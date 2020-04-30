@@ -1,3 +1,9 @@
+//SmartSocketFactory.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+
 import SmartSocket from "./SmartSocket";
 import fs from "fs";
 import DataDelegateInterface from "./DataDelegateInterface";

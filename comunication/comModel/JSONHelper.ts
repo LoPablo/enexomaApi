@@ -1,3 +1,11 @@
+//JSONHelper.ts
+//--------------------------------------------------
+//Copyright 2020 Pascâl Hartmann
+//See LICENSE File
+//--------------------------------------------------
+//Helper Class for JSON Encode and Decode
+//--------------------------------------------------
+
 export default class JSONHelper {
     static stringToDate(timestamp?: number): Date | undefined {
         if (timestamp) {

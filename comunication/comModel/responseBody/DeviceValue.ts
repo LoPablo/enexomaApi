@@ -1,9 +1,7 @@
-//JSONNewDeviceValueResponse.ts
+//DeviceValue.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
-//--------------------------------------------------
-//Wrapper for Response answers
 //--------------------------------------------------
 
 import JSONHelper from "../JSONHelper";
