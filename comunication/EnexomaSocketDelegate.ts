@@ -1,4 +1,4 @@
-//DataDelegateInterface.ts
+//EnexomaSocketDelegate.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
@@ -9,8 +9,9 @@ import JSONResponse from "./comModel/JSONResponse";
 import LoginResponse from "./comModel/responseBody/LoginResponse";
 import DeviceValue from "./comModel/responseBody/DeviceValue";
 import JSONCommand from "./comModel/JSONCommand";
+import LanguageTranslation from "./comModel/responseBody/LanguageTranslation";
 
-export default interface DataDelegateInterface {
+export default interface EnexomaSocketDelegate {
     queueUpPromise(promise: Deffered<JSONResponse>);
 
     handleDisconnect();
@@ -20,6 +21,8 @@ export default interface DataDelegateInterface {
     handleLoginMessage(response: LoginResponse);
 
     handleNewDeviceValue(response: DeviceValue);
+
+    handleNewLanguageTranslation(response: LanguageTranslation);
 
     resolveNextPromise(response: JSONResponse);
 

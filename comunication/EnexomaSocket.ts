@@ -1,4 +1,4 @@
-//SmartSocket.ts
+//EnexomaSocket.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
@@ -9,23 +9,23 @@
 
 import Deffered from '../helpers/Deffered';
 import * as tls from "tls";
-import DataDelegateInterface from "./DataDelegateInterface";
+import EnexomaSocketDelegate from "./EnexomaSocketDelegate";
 import {factory} from "../helpers/Logger";
 import JSONCommand from "./comModel/JSONCommand";
 import JSONResponse from "./comModel/JSONResponse";
 import {PeerCertificate} from "tls";
 import CommandFactory from "./CommandFactory";
 
-const log = factory.getLogger("Communication.SmartSocket");
+const log = factory.getLogger("Communication.EnexomaSocket");
 
-export default class SmartSocket {
+export default class EnexomaSocket {
 
     private ipAddress: string;
     private port: number;
     private certText: string;
 
     private internalSocket?: tls.TLSSocket;
-    private dataDelegate?: DataDelegateInterface;
+    private dataDelegate?: EnexomaSocketDelegate;
     private tempByteChunk: string;
     private keepAliveHandler?: ReturnType<typeof setInterval>;
 
@@ -38,11 +38,11 @@ export default class SmartSocket {
         log.debug("Constructor finished");
     }
 
-    public setDelegate(dataDelegate: DataDelegateInterface) {
+    public setDelegate(dataDelegate: EnexomaSocketDelegate) {
         this.dataDelegate = dataDelegate
     }
 
-    public setupSocket(dataDelegate?: DataDelegateInterface): Promise<void> {
+    public setupSocket(dataDelegate?: EnexomaSocketDelegate): Promise<void> {
         log.debug("Setting Up Socket")
         const socketOptions: tls.ConnectionOptions = {
             timeout: 10000,
@@ -188,4 +188,4 @@ export default class SmartSocket {
 
 }
 
-module.exports = SmartSocket;
+module.exports = EnexomaSocket;

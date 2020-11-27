@@ -1,6 +1,6 @@
 {
   "name": "schellenbergapi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Api for using with the Schellenberg/Enexoma/SmartFriends Smart Home Gateway",
   "main": "SchellenbergApi.js",
   "author": "Pascal Hartmann",
@@ -12,9 +12,11 @@
     "typescript": "^3.8.3",
     "typescript-logging": "^0.6.4"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+    "scripts": {
+      "run": "ts-node test.ts",
+      "postpublish": "npm run clean",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LoPablo/SchellenbergApi.git"

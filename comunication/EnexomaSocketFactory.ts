@@ -1,21 +1,21 @@
-//SmartSocketFactory.ts
+//EnexomaSocketFactory.ts
 //--------------------------------------------------
 //Copyright 2020 Pascâl Hartmann
 //See LICENSE File
 //--------------------------------------------------
 
-import SmartSocket from "./SmartSocket";
+import EnexomaSocket from "./EnexomaSocket";
 import fs from "fs";
-import DataDelegateInterface from "./DataDelegateInterface";
+import EnexomaSocketDelegate from "./EnexomaSocketDelegate";
 import CommandFactory from "./CommandFactory";
 import HashHelper from "./HashHelper";
 import HeloResponse from "./comModel/responseBody/HeloResponse";
 import LoginResponse from "./comModel/responseBody/LoginResponse";
 
-export default class SmartSocketFactory {
+export default class EnexomaSocketFactory {
 
-    static createSocketAndLogin(ipAddress: string, port: number, caPath: string, username: string, password: string, cSymbol: string, shcVersion: string, shApiVersion: string, dataHandler?: DataDelegateInterface, startKeepAlive?: Boolean): Promise<SmartSocket> {
-        var returnPromise: Promise<SmartSocket> = new Promise((resolve, reject) => {
+    static createSocketAndLogin(ipAddress: string, port: number, caPath: string, username: string, password: string, cSymbol: string, shcVersion: string, shApiVersion: string, dataHandler?: EnexomaSocketDelegate, startKeepAlive?: Boolean): Promise<EnexomaSocket> {
+        const returnPromise: Promise<EnexomaSocket> = new Promise((resolve, reject) => {
             if (dataHandler) {
                 this.createSocket(ipAddress, port, caPath, dataHandler)
                     .catch(reason => {
@@ -25,7 +25,6 @@ export default class SmartSocketFactory {
                         if (socket) {
                             socket.sendAndRecieveCommand(CommandFactory.createHeloCmd(username))
                                 .then(responseHelo => {
-
                                     if (responseHelo.response) {
                                         let parsedResponseHelo: HeloResponse = HeloResponse.fromObject(responseHelo.response);
                                         if (parsedResponseHelo && parsedResponseHelo.salt && parsedResponseHelo.sessionSalt) {
@@ -70,10 +69,10 @@ export default class SmartSocketFactory {
         return returnPromise;
     }
 
-    static createSocket(ipAddress: string, port: number, caPath: string, dataHandler?: DataDelegateInterface): Promise<SmartSocket> {
-        var caText: string = fs.readFileSync(caPath, 'utf8');
-        var socket = new SmartSocket(ipAddress, port, caText);
-        var returnPromise: Promise<SmartSocket> = new Promise((resolve, reject) => {
+    static createSocket(ipAddress: string, port: number, caPath: string, dataHandler?: EnexomaSocketDelegate): Promise<EnexomaSocket> {
+        const caText: string = fs.readFileSync(caPath, 'utf8');
+        const socket = new EnexomaSocket(ipAddress, port, caText);
+        const returnPromise: Promise<EnexomaSocket> = new Promise((resolve, reject) => {
             socket.setupSocket(dataHandler)
                 .then(() => {
                     resolve(socket);

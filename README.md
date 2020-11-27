@@ -15,4 +15,4 @@ Feel free to contribute or use in your project. Please link or name me when you 
 Also feel free to ask if anything is unclear or you need help with getting something to work.
 
 ## Example
-For an Example to implement a communication with the Gateway take a look at the ShellenbergBridge.ts file foe an example. A Socket can be opened with the SmartSocketFacotry which needs a DataDefferedHanlder to send incoming messages to (SchellenbergBridge.ts is defined as DataDefferedHandler)
+For an Example, to implement a communication with the Gateway, take a look at the ShellenbergBridge.ts file foe an example. A Socket can be opened with the SmartSocketFacotry which needs a DataDefferedHanlder to send incoming messages to (EnexomaBridge.ts is defined as DataDefferedHandler)
