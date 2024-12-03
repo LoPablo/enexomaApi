@@ -13,7 +13,7 @@ class LogService {
     }
 
     debug(debugMessage, classname) {
-        if (this.config.debugLog) {
+        if (true) { //quick bug fix??
             var currentTime = new Date();
             if (typeof debugMessage !== 'undefined' && debugMessage) {
                 if (typeof classname !== 'undefined' && classname) {
