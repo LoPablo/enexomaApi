@@ -54,13 +54,13 @@ class SmartSocket {
                 });
                 if (!this.connection.authorized) {
                     this.logService.error("Setup connection not authorized with Error: " + this.connection.authorizationError, this);
-                    reject('Setup connection not authorized with Error: ' + this.connection.authorizationError);
-                } else {
+                //    reject('Setup connection not authorized with Error: ' + this.connection.authorizationError);
+                } //else {
                     this.connection.setEncoding('utf8');
                     this.setupSocketEvents();
                     this.logService.debug("Setup finished successfully", this);
                     resolve();
-                }
+                //} OMG AFTER 10 YEARS I UNDERSTOOD THIS! IT JUST TELL YOU THE CONNECTION IS UNAUTHORIZED IT IS STILL USABEL!!!!!! OH MY GOD!!!
             })
                 .on('error', (err) => {
                     this.logService.error(err, this);
